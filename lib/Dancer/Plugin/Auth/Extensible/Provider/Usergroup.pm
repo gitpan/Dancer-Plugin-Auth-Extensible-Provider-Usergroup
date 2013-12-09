@@ -7,7 +7,7 @@ use base 'Dancer::Plugin::Auth::Extensible::Provider::Base';
 use Dancer::Plugin::DBIC;
 use Dancer::Plugin::Passphrase;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 =head1 NAME 
 
@@ -166,10 +166,14 @@ You want your data quickly.
     CREATE INDEX member_user ON memberships (user_id);
     CREATE INDEX member_group ON memberships (group_id);
 
+=head1 INTERNALS
+
+=head4 get_user_details
+
+Used by L<Dancer::Plugin::Auth::Extensible>
+
 =cut
 
-# Return details about the user.  The user's row in the users table will be
-# fetched and all columns returned as a hashref.
 sub get_user_details {
     my ($self, $login_name) = @_;
     return unless defined $login_name;
@@ -208,6 +212,12 @@ sub get_user_details {
     return \%user; 
 }
 
+=head4 match_password
+
+Used by L<Dancer::Plugin::Auth::Extensible>
+
+=cut
+
 
 sub match_password {
     my ($self, $given, $correct) = @_;
@@ -221,6 +231,11 @@ sub match_password {
     return $given eq $correct;
 }
 
+=head4 authenticate_user
+
+Used by L<Dancer::Plugin::Auth::Extensible>
+
+=cut
 
 sub authenticate_user {
     my ($self, $username, $password) = @_;
@@ -246,6 +261,11 @@ sub authenticate_user {
     return $self->match_password($password, $user->{$passphrase_column});
 }
 
+=head4 get_user_roles
+
+Used by L<Dancer::Plugin::Auth::Extensible>
+
+=cut
 
 sub get_user_roles {
     my ($self, $login_name) = @_;
